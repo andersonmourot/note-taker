@@ -1,6 +1,6 @@
 const utility = require("util");
 const fs = require("fs");
-const uuid = require("uuid/v1");
+const uuidv1 = require("uuid/v1");
 const writeAsync = utility.promisify(fs.writeFile);
 const readAsync = utility.promisify(fs.readFile);
 
@@ -25,7 +25,7 @@ class Store {
   remove(id) {
     return this.get()
       .then((notes) => notes.filter((note) => note.id !== id))
-      .then((filtered) => this.write(filtered));
+      .then((filtered) => this.writeFile(filtered));
   }
   add(note) {
     const { title, text } = note;
@@ -33,10 +33,10 @@ class Store {
       throw new Error("Must input title and text");
     }
 
-    const newNote = { title, text, id: uuid() };
+    const newNote = { title, text, id: uuidv1() };
     return this.get()
       .then((notes) => [...notes, newNote])
-      .then((updated) => this.write(updated))
+      .then((updated) => this.writeFile(updated))
       .then(() => newNote);
   }
 }
